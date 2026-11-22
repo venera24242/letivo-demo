@@ -1,0 +1,10 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Сайт туроператора (демо)</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="notice err" style="border-radius:0;text-align:center"><b>ДЕМО.</b> Это имитация сайта туроператора. В рабочей версии кнопка ведёт на настоящий сайт оператора, где агент бронирует сам.</div>
+<div class="wrap" id="r" style="padding:30px 20px"></div>
+<script src="store.js"></script><script>
+const q=new URLSearchParams(location.search); const op=q.get('op'), id=q.get('offer');
+Catalog.load().then(d=>{ const o=Catalog.byId[id], O=d.operators.find(x=>x.id==='op-'+op)||Catalog.ops[o&&o.operator_id];
+ $r=document.getElementById('r');
+ if(!o){ $r.innerHTML='<div class="card"><h2>'+esc(O?O.name:'Оператор')+'</h2><p>Предложение не найдено.</p></div>'; return; }
+ $r.innerHTML=`<p class="mut">${esc(O.name)} (вымышленный оператор)</p><div class="card" style="max-width:640px"><div style="font-size:60px">${o.emoji}</div><h1>${esc(o.title)}</h1><p>${esc(o.country)}, ${esc(o.place)}</p><p class="price">${rub(o.price_rub)}</p><p class="mut">${esc(o.per||'')}</p><p>Даты: ${esc(o.date_from||'по запросу')}</p><button class="btn" onclick="this.insertAdjacentHTML('afterend','<p class=notice>Бронирование в демо-версии не выполняется.</p>')">Забронировать</button></div>`; });
+</script></body></html>

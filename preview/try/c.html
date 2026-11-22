@@ -1,0 +1,20 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Подборка для вас</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="notice" style="border-radius:0;text-align:center">🧪 Тестовая версия: цены и туроператоры вымышленные, бронирование невозможно.</div>
+<div class="wrap" id="r" style="padding-top:24px;padding-bottom:50px"></div>
+<script src="store.js"></script><script>
+const $=s=>document.querySelector(s); const r=$('#r');
+let j=null; try{ j=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(1))))) }catch(e){}
+if(!j){ r.innerHTML='<div class="card"><h2>Ссылка не открывается</h2><p>Попросите агента прислать подборку заново.</p></div>'; }
+else{
+ document.title=j.title+' · '+j.a;
+ r.innerHTML=`<p class="mut">${esc(j.a)}${j.city?' · '+esc(j.city):''}</p><h1>${esc(j.title)}</h1>${j.cl?`<p>Подборка для: <b>${esc(j.cl)}</b></p>`:''}<p>${esc(j.intro||'')}</p>
+ <div class="grid mt">${j.o.map(o=>`<div class="card offer"><div class="em">${esc(o.e)}</div><b>${esc(o.ti)}</b><div class="mut sm">${esc(o.pl)}${o.d?' · '+esc(o.d):''}</div><div class="pr">от ${rub(o.p)}</div><div class="sm mut">${esc(o.pe||'')}</div>${o.n?`<div class="sm">💬 ${esc(o.n)}</div>`:''}<div class="sm mut">Оператор: ${esc(o.op)}</div></div>`).join('')}</div>
+ <div class="card mt" style="max-width:520px"><h3>Понравилась подборка? Оставьте заявку</h3><p class="sm mut">Агент свяжется с вами, уточнит актуальную цену и наличие мест.</p>
+ <label>Имя</label><input id="n"><label class="mt">Телефон или Telegram</label><input id="p"><label class="mt">Пожелания</label><textarea id="m" rows="2"></textarea>
+ <label class="flex mt" style="font-weight:400"><input type="checkbox" id="cs" style="width:auto"> Согласен(на) на обработку персональных данных для связи по этой заявке</label><button class="btn mt" id="go">Отправить заявку</button><div id="res" class="mt"></div></div>`;
+ $('#go').onclick=()=>{ if(!$('#n').value.trim()||!$('#p').value.trim()) return $('#res').innerHTML='<div class="notice err">Укажите имя и контакт</div>';
+  if(!$('#cs').checked) return $('#res').innerHTML='<div class="notice err">Нужно согласие на обработку данных</div>';
+  const ok=Store.publicLead(j.t,{name:$('#n').value.trim(),phone:$('#p').value.trim(),message:$('#m').value.trim()});
+  $('#res').innerHTML= ok?'<div class="notice">✅ Заявка отправлена. Спасибо!</div>':'<div class="notice">В тестовой версии заявка видна только в кабинете агента, открытом в этом же браузере. Здесь ничего не отправлено.</div>'; };
+}
+</script></body></html>

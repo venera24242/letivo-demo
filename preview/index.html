@@ -1,0 +1,111 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LETIVO TRAVEL — для туристов и турагентств</title><meta name="description" content="Пилот Telegram-бота для приёма заявок туристов и передачи в CRM. Посмотрите интерактивное демо LETIVO TRAVEL."><style>
+:root{font-family:Arial,sans-serif;color:#123a3e;background:#f5f7f2}*{box-sizing:border-box}body{margin:0}a{color:inherit}header,main,footer{max-width:1200px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font-size:24px;font-weight:800;letter-spacing:-1px}.brand small{font-size:11px;display:block;letter-spacing:4px}nav{display:flex;flex-wrap:wrap;gap:16px;align-items:center}nav a{text-decoration:none}section{padding:70px 0;border-bottom:1px solid #cad8d1}.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:65px;align-items:center;padding-top:50px}h1{font-size:clamp(40px,5.5vw,72px);line-height:1.03;letter-spacing:-3px;margin:22px 0}h2{font-size:36px;letter-spacing:-1px}h3{font-size:23px}p,li{font-size:18px;line-height:1.65}.eyebrow{font-size:12px;letter-spacing:2px;font-weight:bold;text-transform:uppercase}.muted{color:#537170}.btn{display:inline-block;background:#123f42;color:white;padding:18px 24px;border-radius:8px;text-decoration:none;border:0;font:inherit;cursor:pointer}.secondary{background:#d8f1df;color:#143f40}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0}.phone{background:#123f42;padding:30px;border-radius:30px;transform:rotate(2deg);box-shadow:0 28px 60px #143f4220}.phone b{color:#c9f2d9}.bubble{background:#fff;border-radius:16px;padding:16px;margin:18px 0;line-height:1.5}.bubble.answer{background:#ccf1d8;margin-left:40px}.caption{font-size:13px;line-height:1.6}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.step{border-top:3px solid #1a776d;padding-top:20px}.step span{font-size:14px;color:#527a6f}.offer{background:#dceedd;border-radius:20px;padding:32px}.price{font-size:36px;font-weight:bold}.notice{border-left:4px solid #50856b;padding:0 20px}details{padding:20px 0;border-bottom:1px solid #cad8d1}summary{font-size:21px;cursor:pointer}input,select,textarea{width:100%;padding:14px;font:inherit;border:1px solid #9cb7ab;border-radius:7px;margin:8px 0 18px;background:white}label{display:block;font-weight:bold}.form{max-width:680px}.check{display:flex;gap:12px;font-weight:normal;line-height:1.5}.check input{width:auto;margin-top:5px}footer{display:flex;justify-content:space-between;gap:25px;font-size:14px}.status{padding:18px;background:#e4eedb;line-height:1.6}textarea{min-height:160px}@media(max-width:760px){header,main,footer{padding:20px}nav{gap:12px;font-size:14px}.hero,.grid{grid-template-columns:1fr;gap:25px}section{padding:40px 0}h1{letter-spacing:-1.5px}.phone{transform:none}footer{display:block}h2{font-size:29px}}@media(max-width:760px){header{flex-wrap:wrap}nav{flex-wrap:wrap;gap:8px}.btn{padding:12px 15px}p,li{font-size:17px}}@media print{header nav,.actions,form{display:none}section{padding:20px 0}.hero{grid-template-columns:1fr 1fr}.phone{box-shadow:none}body{background:white}}
+.site-layouts{border:0;padding:0;margin:24px 0}.site-layouts legend{font-weight:700;margin-bottom:12px}.site-layout{display:flex;align-items:flex-start;gap:10px;padding:16px;border:1px solid #9cb7ab;border-radius:12px;background:white;cursor:pointer}.site-layout:has(input:checked){outline:2px solid #1a776d;background:#e4f2e6}.site-layout input{width:auto;margin:4px 0}.site-layout small{display:block;margin-top:7px;font-size:15px;font-weight:normal;line-height:1.5}
+.landing-preview{margin:22px 0 0;border:1px solid #9cb7ab;border-radius:16px;overflow:hidden;background:white}.landing-header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:14px 18px}.landing-header span{font-size:14px}.landing-content{display:grid}.landing-slide{position:relative;min-height:200px;overflow:hidden;background:#406d68}.landing-slide img{display:block;width:100%;height:100%;position:absolute;object-fit:cover}.landing-slide-caption{position:relative;min-height:200px;display:flex;align-items:end;justify-content:space-between;gap:8px;padding:18px;background:linear-gradient(transparent 20%,#062f36dd);color:white;font-size:clamp(22px,4vw,38px)}.landing-arrows{display:flex;gap:6px}.landing-arrows button{font:inherit;font-size:24px;width:42px;height:42px;border:0;border-radius:50%;cursor:pointer;color:#123a3e;background:white}.landing-search{padding:18px;background:#e5f3e9}.landing-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}.landing-fields span{background:white;border-radius:6px;padding:8px;font-size:14px}.landing-preview[data-layout="Горы"] .landing-content{grid-template-columns:1fr 1.1fr}.landing-preview[data-layout="Горы"] .landing-search,.landing-preview[data-layout="Город"] .landing-search{order:-1}.landing-preview[data-layout="Горы"] .landing-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.landing-preview[data-layout="Город"] .landing-search{background:#ece8f8}.landing-preview[data-layout="Город"] .landing-slide{margin:12px;border-radius:8px}@media(max-width:540px){.landing-preview[data-layout="Горы"] .landing-content{grid-template-columns:1fr}.landing-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style><header><a class="brand" href="#" style="text-decoration:none"><img src="logo.png" alt="LETIVO TRAVEL" style="width:205px;height:auto;display:block"></a><nav><a class="btn secondary" href="https://letivo-travel.ru/tourist">Для туриста</a><a class="btn" href="https://letivo-travel.ru/agent">Для турагента</a><a href="https://letivo-travel.ru/agent#tourmix">TourMix</a><a href="#agency-website">Готовый сайт для турагентства</a><a href="#how">Как работает</a><a href="try/app.html#/register">Попробовать бесплатно</a><a href="#try">Тарифы и тест</a><a href="#pilot">Пилот</a><a href="https://letivo-travel.ru/agent">Кабинет агента</a></nav></header><main>
+<section class="hero"><div><div class="eyebrow">Для независимых турагентств</div><h1>Ваше путешествие.<br>Всё в LETIVO.</h1><p class="muted">Туристу — персональные подборки и сравнение отелей. Агенту — TourMix, CRM и Travel DNA в едином рабочем пространстве.</p><div class="actions"><a class="btn" href="https://letivo-travel.ru/tourist">Открыть подборку отелей</a><a class="btn secondary" href="#request">Обсудить пилот</a></div><p class="caption">LETIVO TRAVEL · ранняя версия продукта. Кабинет и TourMix доступны сейчас. Подключение рабочего бота — после индивидуальной настройки и проверки.</p></div><div class="phone" aria-label="Пример диалога"><b>LETIVO / Telegram</b><div class="bubble">Куда хотите отправиться?</div><div class="bubble answer">В Узбекистан, вдвоём, в марте.</div><div class="bubble">Уточним даты, город вылета, бюджет и контакт для менеджера.</div><div class="bubble answer">Хочу обсудить варианты с агентом.</div><div class="bubble"><strong>Заявка → CRM</strong><br>Направление · даты · туристы · бюджет · контакт</div><p class="caption" style="color:#c1dfce">Иллюстрация сценария. Бот не подтверждает цену и наличие тура.</p></div></section>
+<section id="agency-website">
+<h2>Готовый сайт для турагентства</h2>
+<p>Выберите макет под свой бизнес. LETIVO настроит сайт под ваш бренд, подключит домен и возьмёт на себя хостинг и техническую поддержку.</p>
+<form id="agency-website-form">
+  <fieldset class="site-layouts">
+    <legend>Выберите макет</legend>
+    <div class="grid">
+      <label class="site-layout"><input type="radio" name="layout" value="Море" required checked><span><strong>Море</strong><small>Фото на весь экран, подбор сразу под ним.</small></span></label>
+      <label class="site-layout"><input type="radio" name="layout" value="Горы"><span><strong>Горы</strong><small>Фото справа, подбор слева на первом экране.</small></span></label>
+      <label class="site-layout"><input type="radio" name="layout" value="Город"><span><strong>Город</strong><small>Подбор сверху, слайдер направлений ниже.</small></span></label>
+    </div>
+  </fieldset>
+  <div class="landing-preview" id="landing-preview" data-layout="Море">
+    <div class="landing-header"><strong>Ваше турагентство</strong><span>Направления · Контакты</span></div>
+    <div class="landing-content">
+      <div class="landing-slide">
+        <img id="landing-photo" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&amp;fit=crop&amp;w=1100&amp;q=78" alt="">
+        <div class="landing-slide-caption"><strong id="landing-title">Отдых у моря</strong>
+          <div class="landing-arrows"><button type="button" id="landing-prev" aria-label="Предыдущее направление">‹</button><button type="button" id="landing-next" aria-label="Следующее направление">›</button></div>
+        </div>
+      </div>
+      <div class="landing-search"><strong>Подбор тура</strong>
+        <div class="landing-fields"><span>Куда</span><span>Откуда</span><span>Даты</span><span>Туристы</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Предпросмотр лендинга. Стрелки переключают фотографии. Поля подбора показывают расположение формы на будущем сайте.</p>
+  <div class="form">
+    <label>Название агентства<input name="agency" autocomplete="organization" maxlength="150" required></label>
+    <label>Телефон<input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+    <label>Электронная почта<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+    <button class="btn">Подготовить заявку</button>
+    <p class="caption">Форма подготовит письмо на адрес LETIVO. Отправку вы подтверждаете в своей почте.</p>
+    <div id="agency-website-result" hidden>
+      <label>Текст заявки<textarea id="agency-website-message" readonly></textarea></label>
+      <a class="btn secondary" id="agency-website-email" href="mailto:info@letivo-travel.ru">Открыть письмо</a>
+    </div>
+  </div>
+</form>
+</section>
+<section id="how"><div class="eyebrow">От первого сообщения к работе менеджера</div><h2>Меньше разрозненных сообщений.<br>Больше порядка в заявках.</h2><div class="grid"><article class="step"><span>01 / ТУРИСТ</span><h3>Заполняет анкету</h3><p>Указывает направление, даты, город вылета, состав поездки, бюджет и контакт в Telegram.</p></article><article class="step"><span>02 / БОТ</span><h3>Передаёт данные</h3><p>В прототипе анкета создаёт карточку в CRM. Повторная обработка одного сообщения не создаёт вторую заявку.</p></article><article class="step"><span>03 / МЕНЕДЖЕР</span><h3>Продолжает диалог</h3><p>Открывает карточку, уточняет пожелания и меняет статус заявки. Подбор и подтверждение тура остаются за агентством.</p></article></div></section>
+<section><h2>Посмотрите систему изнутри</h2><p>Рабочий кабинет объединяет CRM, задачи, подборки, Travel DNA и TourMix. Данные сохраняются на сервере и доступны после входа через ChatGPT.</p><a class="btn" href="https://letivo-travel.ru/agent">Открыть кабинет</a><p class="notice">Реальные цены туроператоров, автоматическая оплата и бронирование пока не подключены. Возможности демонстрационного интерфейса и рабочего Telegram-прототипа отличаются.</p></section>
+<section id="try">
+<div class="eyebrow">Новое: рабочий тест для турагентов</div>
+<h2>Попробуйте LETIVO бесплатно 14 дней</h2>
+<p>Зарегистрируйтесь и получите свой кабинет: поиск и сравнение туров, перелётов и отелей, подборки со ссылкой для клиента, простая CRM, готовые сторис и Reels для соцсетей.</p>
+<div class="grid">
+<article class="step"><span>01 / ПОИСК</span><h3>Сравнение вариантов</h3><p>Туры, отели, перелёты и круизы в одной таблице. Кнопка «К оператору» ведёт на сайт оператора, где клиент бронирует сам.</p></article>
+<article class="step"><span>02 / ПОДБОРКИ</span><h3>Ссылка для клиента</h3><p>Соберите подборку, отправьте ссылку. Клиент оставляет заявку с согласием на обработку данных.</p></article>
+<article class="step"><span>03 / КОНТЕНТ</span><h3>Сторис и Reels</h3><p>Из подборки одним нажатием получаются картинки для сторис, короткое видео и текст для Telegram.</p></article>
+</div>
+<div class="actions"><a class="btn" href="try/app.html#/register">Попробовать бесплатно</a><a class="btn secondary" href="try/index.html#tarify">Тарифы</a></div>
+<p class="notice">Это тестовая версия. Цены и варианты в ней демонстрационные и помечены «ДЕМО». Реальные цены операторов появятся после подключения договоров и доступов. Telegram-бот и автопубликация пока не подключены.</p>
+</section>
+<section id="pilot"><div class="eyebrow">Первое предложение агентствам</div><h2>Начнём с одного понятного сценария</h2><div class="offer"><h3>Пилот «Telegram → заявка → менеджер»</h3><p>Согласуем анкету и оформление, настроим тестовый контур, пройдём путь заявки вместе с вашим менеджером и определим условия рабочего запуска.</p><div class="price">Стоимость по согласованию</div><p>Объём настройки, сроки, сопровождение и оплата фиксируются до начала работ. Онлайн-оплата на этом сайте не принимается.</p><a class="btn" href="#request">Подготовить запрос на пилот</a></div></section>
+<section><h2>Вопросы перед стартом</h2><details><summary>Можно ли подключить к нашему агентству?</summary><p>Пилот предполагает отдельную настройку. До публичного запуска необходимы сервер, защищённое подключение, документы об обработке данных и проверка полного сценария.</p></details><details><summary>Бот сам продаёт и бронирует туры?</summary><p>На этом этапе он собирает запрос и передаёт его менеджеру. Он не проверяет актуальные цены и не оформляет бронирование.</p></details><details><summary>Что можно попробовать без подключения?</summary><p>Откройте кабинет: добавьте клиента, создайте задачу и соберите подборку. Для знакомства также сохранён отдельный демонстрационный режим внутри платформы.</p></details><details><summary>Что будет дальше?</summary><p>Развитие платформы: защищённый рабочий запуск, интеграции и инструменты сопровождения. Будущие функции обсуждаются отдельно и не включены автоматически в пилот.</p></details></section>
+<section id="request"><div class="eyebrow">Знакомство с вашим процессом</div><h2>Подготовьте запрос на пилот</h2><p>Форма составляет текст для отправки. Она ничего не отправляет и не сохраняет на сервере: скопируйте результат и отправьте его на <a href="mailto:info@letivo-travel.ru">info@letivo-travel.ru</a>.</p><form class="form" id="brief"><label>Название агентства<input name="agency" required maxlength="150" placeholder="Ваше агентство"></label><label>Главная задача<select name="goal"><option>Хочу сайт для агентства</option><option>Собирать заявки в Telegram</option><option>Передавать заявки менеджеру в CRM</option><option>Посмотреть пилот для своей команды</option></select></label><label>Количество менеджеров<input name="team" type="number" min="1" max="10000" value="1" required></label><label>Что важно учесть<textarea name="notes" maxlength="1500" placeholder="Например: авторские туры, несколько направлений"></textarea></label><button class="btn">Составить запрос</button></form><div id="result" hidden class="form"><label>Ваш запрос<textarea id="message" readonly></textarea></label><a class="btn" id="email-request" href="mailto:info@letivo-travel.ru">Открыть письмо</a> <button class="btn secondary" id="copy">Скопировать текст</button><p id="feedback" role="status"></p></div></section>
+<section id="support"><h2>Нужна помощь с LETIVO?</h2><p>Напишите, что вы пытались сделать и на каком шаге возникла проблема. Если есть сообщение об ошибке, укажите его в письме.</p><a class="btn secondary" href="mailto:info@letivo-travel.ru?subject=Поддержка%20LETIVO">Написать в поддержку</a></section>
+</main><footer><div class="brand">LETIVO<small>TRAVEL</small></div><p>Технологии для работы турагентства.<br>Презентация пилотного продукта · ноябрь 2026</p><p>Подключение к пилоту<br><a href="mailto:info@letivo-travel.ru">info@letivo-travel.ru</a></p></footer><script>document.getElementById('brief').onsubmit=e=>{e.preventDefault();const d=new FormData(e.target);document.getElementById('message').value=['Здравствуйте! Интересует пилот LETIVO TRAVEL.','Агентство: '+d.get('agency'),'Задача: '+d.get('goal'),'Менеджеров: '+d.get('team'),'Комментарий: '+d.get('notes')].join('\n');document.getElementById('email-request').href='mailto:info@letivo-travel.ru?subject='+encodeURIComponent('Запрос на пилот LETIVO')+'&body='+encodeURIComponent(document.getElementById('message').value);document.getElementById('result').hidden=false;document.getElementById('result').scrollIntoView({behavior:'smooth'})};document.getElementById('copy').onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById('message').value);document.getElementById('feedback').textContent='Скопировано. Текст можно вставить в письмо.'}catch{document.getElementById('message').select();document.getElementById('feedback').textContent='Выделите текст и скопируйте вручную.'}};</script>
+<script>
+const websiteForm = document.getElementById('agency-website-form');
+const websiteResult = document.getElementById('agency-website-result');
+const landingPreview = document.getElementById('landing-preview');
+const landingPhoto = document.getElementById('landing-photo');
+const landingTitle = document.getElementById('landing-title');
+const slides = [
+  ['Море', 'Отдых у моря', 'photo-1507525428034-b723cf961d3e'],
+  ['Горы', 'Путешествия в горы', 'photo-1610652259659-338182b57e5a'],
+  ['Город', 'Городские путешествия', 'photo-1519501025264-65ba15a82390']
+];
+let slideIndex = 0;
+function showSlide(index) {
+  slideIndex = (index + slides.length) % slides.length;
+  const [, title, image] = slides[slideIndex];
+  landingTitle.textContent = title;
+  landingPhoto.src = 'https://images.unsplash.com/' + image + '?auto=format&fit=crop&w=1100&q=78';
+}
+websiteForm.addEventListener('change', event => {
+  if (event.target.name !== 'layout') return;
+  landingPreview.dataset.layout = event.target.value;
+  showSlide(slides.findIndex(([layout]) => layout === event.target.value));
+});
+document.getElementById('landing-prev').onclick = () => showSlide(slideIndex - 1);
+document.getElementById('landing-next').onclick = () => showSlide(slideIndex + 1);
+
+websiteForm.addEventListener('input', () => { websiteResult.hidden = true; });
+websiteForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const data = new FormData(websiteForm);
+  const message = [
+    'Здравствуйте! Хочу заказать сайт для турагентства.',
+    'Макет: ' + data.get('layout'),
+    'Агентство: ' + data.get('agency').trim(),
+    'Телефон: ' + data.get('phone').trim(),
+    'Электронная почта: ' + data.get('email').trim()
+  ].join('\n');
+  document.getElementById('agency-website-message').value = message;
+  document.getElementById('agency-website-email').href =
+    'mailto:info@letivo-travel.ru?subject=' + encodeURIComponent('Заказ сайта для турагентства') +
+    '&body=' + encodeURIComponent(message);
+  websiteResult.hidden = false;
+  document.getElementById('agency-website-email').focus();
+});
+</script></html>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5e5cbb818103a10',t:'MTc5NTMyODA4NQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5e5cbb818103a10',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
