@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LETIVO — тарифы, оплата и магазин (ДЕМО)</title>
+<style>
+:root{--b:#0f4c81;--g:#1e8e3e;--r:#c5221f;--bg:#f5f7fa}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:#1d2733}
+header{background:var(--b);color:#fff;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+header b{font-size:18px}.demo{background:#fff3cd;color:#5c4400;padding:8px 18px;font-size:14px}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:10px 18px;background:#fff;border-bottom:1px solid #dde3ea}
+nav button{border:1px solid #c9d3de;background:#fff;border-radius:18px;padding:7px 14px;cursor:pointer;font-size:14px}
+nav button.on{background:var(--b);color:#fff;border-color:var(--b)}
+main{max-width:980px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #dde3ea;border-radius:12px;padding:14px}
+.card h3{margin:0 0 6px;font-size:16px}.price{font-size:22px;font-weight:700;margin:6px 0}
+.btn{background:var(--b);color:#fff;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:14px}
+.btn.ok{background:var(--g)}.btn.no{background:var(--r)}.btn.ghost{background:#fff;color:var(--b);border:1px solid var(--b)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}td,th{border-bottom:1px solid #e6ebf0;padding:7px;text-align:left}
+.tag{display:inline-block;font-size:12px;border-radius:10px;padding:2px 8px;background:#e8eef5}
+.paid{background:#e6f4ea;color:var(--g)}.failed{background:#fce8e6;color:var(--r)}.refunded{background:#fef7e0;color:#8a6100}.pending{background:#e8f0fe}
+input,select{padding:8px;border:1px solid #c9d3de;border-radius:8px;width:100%;margin:4px 0 10px;font-size:14px}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:16px}
+.modal .card{max-width:380px;width:100%}.muted{color:#5f6b7a;font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap}
+</style></head><body>
+<header><b>LETIVO</b><span id="who">Не зарегистрированы</span></header>
+<div class="demo"><b>ДЕМО.</b> Тестовая версия модуля продаж (ТЗ №2). Деньги не списываются, данные хранятся только в этом браузере.
+Продаются только собственные продукты LETIVO; туры операторов здесь не продаются.</div>
+<nav id="nav"></nav><main id="view"></main>
+<div class="modal" id="pay"><div class="card" id="payBox"></div></div>
+<script>
+const PLANS={start:["Старт",1900,"50 подборок, 300 заявок, 1 сотрудник"],pro:["Профи",4900,"500 подборок, Telegram-бот, 5 сотрудников"],agency:["Агентство",9900,"Без лимитов, свой домен, 20 сотрудников"]};
+const PRODUCTS=[
+ ...Object.entries(PLANS).map(([k,v])=>({code:`plan_${k}_1m`,kind:"subscription",plan:k,title:`Тариф «${v[0]}» на 1 месяц`,price:v[1],aud:"agency"})),
+ {code:"bot_telegram_agency",kind:"module",title:"Telegram-бот агентства (подключение)",price:2900,aud:"agency",access:"Модуль «Telegram-бот» включён в кабинете."},
+ {code:"crm_module_channels",kind:"module",title:"CRM-модуль «Каналы заявок»",price:1500,aud:"agency",access:"Модуль «Каналы заявок» включён."},
+ {code:"setup_start",kind:"setup",title:"Пакет настройки «Старт»",price:4900,aud:"agency",access:"Заказ на настройку принят, менеджер свяжется."},
+ {code:"digital_story_templates",kind:"digital",title:"Шаблоны сторис и Reels (30 шт.)",price:990,aud:"any",access:"ДЕМО: ссылка на архив шаблонов открыта."},
+ {code:"digital_cruise_guide",kind:"digital",title:"Гайд «Как продавать круизы»",price:690,aud:"any",access:"ДЕМО: PDF-гайд открыт."},
+ {code:"digital_sales_scripts",kind:"digital",title:"Скрипты продаж для турагентства",price:490,aud:"any",access:"ДЕМО: скрипты открыты."}];
+const KIND={subscription:"Подписка",module:"Модуль",setup:"Настройка",digital:"Цифровой товар"};
+const ST={pending:"ждёт оплаты",paid:"оплачен",failed:"отказ",refunded:"возврат"};
+let S=JSON.parse(localStorage.getItem("letivo_billing_demo")||"null")||{org:null,orders:[],notes:[],events:[],ents:[]};
+const save=()=>localStorage.setItem("letivo_billing_demo",JSON.stringify(S));
+const now=()=>new Date().toISOString(), fmt=d=>d?new Date(d).toLocaleString("ru-RU",{dateStyle:"short",timeStyle:"short"}):"—";
+const days=n=>new Date(Date.now()+n*864e5).toISOString();
+function notify(kind,title,body){S.notes.unshift({kind,title,body,at:now(),read:false})}
+function access(){const o=S.org;if(!o)return{mode:"none"};
+ if(o.paidUntil&&o.paidUntil>now())return{mode:"paid",text:`Тариф «${PLANS[o.plan][0]}» до ${fmt(o.paidUntil)}`};
+ if(o.trialEnds>now()){const d=Math.ceil((new Date(o.trialEnds)-Date.now())/864e5);return{mode:"trial",text:`Пробный период: осталось ${d} дн.`,d}}
+ return{mode:"expired",text:"Пробный период закончился — выберите тариф"}}
+function reminders(){const a=access();if(a.mode==="trial"&&a.d<=3&&!S.notes.some(n=>n.kind==="trial_ending"))notify("trial_ending","Пробный период скоро закончится","Выберите тариф, чтобы не потерять доступ.");
+ if(a.mode==="expired"&&!S.notes.some(n=>n.kind==="trial_ended"))notify("trial_ended","Пробный период закончился","Выберите тариф в разделе «Тарифы».")}
+const TABS=[["reg","Регистрация"],["tariffs","Тарифы"],["shop","Магазин"],["history","История оплат"],["notes","Уведомления"],["agency","Кабинет агентства"],["tourist","Кабинет туриста"],["admin","Админ"]];
+let tab=S.org?"agency":"reg";
+function nav(){document.getElementById("nav").innerHTML=TABS.map(([k,t])=>`<button class="${k===tab?"on":""}" onclick="go('${k}')">${t}${k==="notes"&&S.notes.some(n=>!n.read)?" •":""}</button>`).join("");
+ document.getElementById("who").textContent=S.org?`${S.org.name} · ${access().text}`:"Не зарегистрированы"}
+function go(k){tab=k;if(k==="notes")S.notes.forEach(n=>n.read=true);save();render()}
+function need(){return S.org?"":`<div class="card">Сначала зарегистрируйте агентство во вкладке «Регистрация».</div>`}
+const V={
+reg:()=>S.org?`<div class="card"><h3>Агентство зарегистрировано</h3><p>${S.org.name}, ${S.org.email}</p><p>${access().text}</p>
+ <div class="row"><button class="btn ghost" onclick="expire()">Тест: завершить пробный период</button><button class="btn no" onclick="resetAll()">Сбросить демо</button></div></div>`:
+ `<div class="card" style="max-width:420px"><h3>Регистрация агентства</h3><p class="muted">После регистрации сразу включается пробный период 14 дней.</p>
+ <label>Название агентства<input id="rn" value="Тестовое агентство"></label><label>E-mail<input id="re" value="test@example.ru"></label>
+ <label><input type="checkbox" id="rc" style="width:auto" checked> Согласен(а) на обработку персональных данных</label><br><br>
+ <button class="btn" onclick="register()">Зарегистрироваться</button></div>`,
+tariffs:()=>need()||`<p>${access().text}</p><div class="grid">${Object.entries(PLANS).map(([k,v])=>`<div class="card"><h3>${v[0]}</h3><div class="price">${v[1].toLocaleString("ru-RU")} ₽<span class="muted"> / мес</span></div><p class="muted">${v[2]}</p><button class="btn" onclick="buy('plan_${k}_1m')">Выбрать и оплатить (тест)</button></div>`).join("")}</div><p class="muted">Цены — черновик, утверждает владелец LETIVO.</p>`,
+shop:()=>need()||`<div class="grid">${PRODUCTS.filter(p=>p.kind!=="subscription").map(p=>{const own=S.ents.some(e=>e.code===p.code&&e.active);return`<div class="card"><span class="tag">${KIND[p.kind]}</span><h3>${p.title}</h3><div class="price">${p.price} ₽</div>${own?`<p style="color:var(--g)">✔ Доступ открыт</p><button class="btn ghost" onclick="openAccess('${p.code}')">Открыть</button>`:`<button class="btn" onclick="buy('${p.code}')">Купить (тест)</button>`}<p class="muted">Доступ открывается автоматически после оплаты.</p></div>`}).join("")}</div>`,
+history:()=>need()||table(S.orders,true),
+notes:()=>need()||(S.notes.length?S.notes.map(n=>`<div class="card" style="margin-bottom:8px"><b>${n.title}</b><div class="muted">${fmt(n.at)}</div><div>${n.body||""}</div></div>`).join(""):"<p>Уведомлений нет.</p>"),
+agency:()=>need()||`<div class="grid"><div class="card"><h3>Доступ</h3><p>${access().text}</p><button class="btn" onclick="go('tariffs')">Тарифы</button></div>
+ <div class="card"><h3>Модули и покупки</h3>${S.ents.filter(e=>e.active).map(e=>`<div>✔ ${title(e.code)}</div>`).join("")||"<p class='muted'>Пока нет</p>"}</div>
+ <div class="card"><h3>Уведомления</h3><p>${S.notes.filter(n=>!n.read).length} новых</p><button class="btn ghost" onclick="go('notes')">Открыть</button></div>
+ <div class="card"><h3>Разделы</h3><p class="muted">Поиск · Конструктор подборок · CRM · Тарифы и оплата · Магазин · Уведомления · Настройки</p></div></div>`,
+tourist:()=>`<div class="card"><h3>Кабинет туриста (каркас)</h3><p class="muted">Разделы: мои заявки, подборки от агента, покупки, уведомления. Турист может купить цифровые товары LETIVO; тарифы и модули — только агентствам.</p>
+ <div class="grid">${PRODUCTS.filter(p=>p.aud==="any").map(p=>`<div class="card"><h3>${p.title}</h3><div class="price">${p.price} ₽</div><button class="btn" onclick="buy('${p.code}')">Купить (тест)</button></div>`).join("")}</div></div>`,
+admin:()=>`<div class="card"><h3>Кабинет администратора (каркас)</h3><p>Провайдер оплаты: <b>ДЕМО</b> (тест). В рабочей версии: ЮKassa, ключи только в секретах сервера.</p>
+ <p>Оплачено (тест): <b>${S.orders.filter(o=>o.status==="paid").reduce((s,o)=>s+o.price,0).toLocaleString("ru-RU")} ₽</b> · заказов: ${S.orders.length}</p></div><br>${table(S.orders,false,true)}
+ <h3>Уведомления провайдера</h3>${S.events.length?`<table><tr><th>Время</th><th>Событие</th><th>Заказ</th><th>Результат</th></tr>${S.events.map(e=>`<tr><td>${fmt(e.at)}</td><td>${e.event}</td><td>№${e.order}</td><td>${e.res}</td></tr>`).join("")}</table>`:"<p class='muted'>Пока нет</p>"}`};
+function title(c){return PRODUCTS.find(p=>p.code===c).title}
+function table(list,user,adm){if(!list.length)return"<p>Заказов пока нет.</p>";return`<table><tr><th>№</th><th>Продукт</th><th>Сумма</th><th>Статус</th><th>Дата</th><th></th></tr>${list.map(o=>`<tr><td>${o.id}</td><td>${o.title}</td><td>${o.price} ₽</td><td><span class="tag ${o.status}">${ST[o.status]}</span></td><td>${fmt(o.at)}</td><td>${o.status==="pending"?`<button class="btn" onclick="checkout(${o.id})">Оплатить</button>`:""}${adm&&o.status==="paid"?`<button class="btn no" onclick="refund(${o.id})">Возврат</button> `:""}${adm&&o.status!=="pending"?`<button class="btn ghost" onclick="replay(${o.id})">Повтор уведомления</button>`:""}</td></tr>`).join("")}</table>`}
+function register(){if(!rc.checked)return alert("Нужно согласие на обработку данных");S.org={name:rn.value,email:re.value,plan:"trial",trialEnds:days(14),paidUntil:null};notify("trial_started","Пробный период 14 дней включён","Все функции доступны до "+fmt(S.org.trialEnds));tab="tariffs";save();render()}
+function expire(){S.org.trialEnds=days(-1);S.org.paidUntil=null;reminders();save();render()}
+function resetAll(){localStorage.removeItem("letivo_billing_demo");location.reload()}
+function buy(code){if(!S.org&&tab!=="tourist")return go("reg");const p=PRODUCTS.find(x=>x.code===code);const o={id:S.orders.length+1,code,title:p.title,price:p.price,status:"pending",at:now(),ext:"demo-"+Math.random().toString(16).slice(2,10)};S.orders.unshift(o);notify("order_created",`Заказ №${o.id} создан`,`${p.title} — ${p.price} ₽`);save();checkout(o.id)}
+function checkout(id){const o=S.orders.find(x=>x.id===id);payBox.innerHTML=`<p class="demo" style="margin:-14px -14px 10px;border-radius:12px 12px 0 0"><b>ДЕМО-оплата.</b> Деньги не списываются.</p><h3>Заказ №${o.id}</h3><p>${o.title}</p><div class="price">${o.price} ₽</div><div class="row"><button class="btn ok" onclick="event_(${id},'payment.succeeded')">Оплатить (тест)</button><button class="btn no" onclick="event_(${id},'payment.canceled')">Отказ</button><button class="btn ghost" onclick="pay.style.display='none'">Закрыть</button></div>`;pay.style.display="flex"}
+function event_(id,ev,replay){const o=S.orders.find(x=>x.id===id),p=PRODUCTS.find(x=>x.code===o.code);let res="проигнорировано";
+ if(S.events.some(e=>e.order===id&&e.event===ev))res="повтор — без изменений";
+ else if(ev==="payment.succeeded"&&o.status==="pending"){o.status="paid";S.ents.push({code:o.code,order:id,active:true});
+  if(p.kind==="subscription"){const base=S.org.paidUntil&&S.org.paidUntil>now()?new Date(S.org.paidUntil):new Date();S.org.plan=p.plan;S.org.paidUntil=new Date(+base+30*864e5).toISOString();notify("payment_succeeded",`Оплата заказа №${id} прошла`,`Тариф «${PLANS[p.plan][0]}» до ${fmt(S.org.paidUntil)}`)}
+  else notify("payment_succeeded",`Оплата заказа №${id} прошла`,p.access);res="оплачено, доступ выдан"}
+ else if(ev==="payment.canceled"&&o.status==="pending"){o.status="failed";notify("payment_failed",`Оплата заказа №${id} не прошла`,"Деньги не списаны.");res="отказ"}
+ S.events.unshift({at:now(),event:ev+(replay?" (повтор)":""),order:id,res});pay.style.display="none";save();render()}
+function replay(id){const o=S.orders.find(x=>x.id===id);event_(id,o.status==="failed"?"payment.canceled":"payment.succeeded",true)}
+function refund(id){const o=S.orders.find(x=>x.id===id),p=PRODUCTS.find(x=>x.code===o.code);o.status="refunded";S.ents.filter(e=>e.order===id).forEach(e=>e.active=false);
+ if(p.kind==="subscription"&&S.org.paidUntil){const u=new Date(+new Date(S.org.paidUntil)-30*864e5);if(u<new Date()){S.org.paidUntil=null;S.org.plan="trial"}else S.org.paidUntil=u.toISOString()}
+ notify("refund",`Возврат по заказу №${id}`,`Возвращено ${o.price} ₽, доступ отключён.`);S.events.unshift({at:now(),event:"refund.succeeded",order:id,res:"возврат"});save();render()}
+function openAccess(c){alert(PRODUCTS.find(p=>p.code===c).access)}
+function render(){reminders();nav();document.getElementById("view").innerHTML=V[tab]();save()}
+render();
+</script></body></html>
